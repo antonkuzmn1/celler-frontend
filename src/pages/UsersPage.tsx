@@ -24,7 +24,7 @@ const UsersPage: React.FC = () => {
     const {authorized} = useSelector((state: RootState) => state.user);
 
     const [name, setName] = useState<string>('');
-    const [tables, setTables] = useState<User[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const [search, setSearch] = useState<string>('');
     const [filteredTables, setFilteredTables] = useState<User[]>([]);
 
@@ -36,13 +36,30 @@ const UsersPage: React.FC = () => {
         navigate('/tables');
     }
 
+    const sortTable = (column: keyof User, asc: boolean) => {
+        const sortedUsers = [...users];
+        sortedUsers.sort((a, b): number => {
+            if (a[column] > b[column]) return asc ? 1 : -1;
+            if (a[column] < b[column]) return asc ? -1 : 1;
+            return 0;
+        });
+        setUsers(sortedUsers);
+        setFilteredTables(sortedUsers.filter((table: User) => {
+            return (
+                table.username.includes(search) ||
+                table.title.includes(search) ||
+                table.name.includes(search)
+            );
+        }));
+    };
+
     useEffect(() => {
         if (authorized) {
             dispatch(setUserLoading(true));
             axios.get(baseUrl + '/security').then((response) => {
                 setName(response.data.name);
                 axios.get<User[]>(baseUrl + '/security/user').then((response) => {
-                    setTables(response.data);
+                    setUsers(response.data);
                     dispatch(setUserLoading(false));
                 }).catch((_error) => {
                     dispatch(setUserLoading(false));
@@ -54,14 +71,14 @@ const UsersPage: React.FC = () => {
     }, [authorized]);
 
     useEffect(() => {
-        setFilteredTables(tables.filter((table: User) => {
+        setFilteredTables(users.filter((table: User) => {
             return (
                 table.username.includes(search) ||
                 table.title.includes(search) ||
                 table.name.includes(search)
             );
         }));
-    }, [tables, search]);
+    }, [users, search]);
 
     return (
         <div className="UsersPage">
@@ -91,12 +108,48 @@ const UsersPage: React.FC = () => {
                             <thead>
                             <tr>
                                 <th className='action'>Settings</th>
-                                <th className='small'>ID</th>
-                                <th className='medium'>Username</th>
-                                <th className='small'>Admin</th>
-                                <th className='large'>Name</th>
-                                <th className='large'>Title</th>
-                                <th className='medium'>Created</th>
+                                <th className='small'>
+                                    <div className='buttons'>
+                                        <button onClick={() => sortTable('id', true)}>A</button>
+                                        <button onClick={() => sortTable('id', false)}>D</button>
+                                    </div>
+                                    ID
+                                </th>
+                                <th className='medium'>
+                                    <div className='buttons'>
+                                        <button onClick={() => sortTable('username', true)}>A</button>
+                                        <button onClick={() => sortTable('username', false)}>D</button>
+                                    </div>
+                                    Username
+                                </th>
+                                <th className='small'>
+                                    <div className='buttons'>
+                                        <button onClick={() => sortTable('admin', true)}>A</button>
+                                        <button onClick={() => sortTable('admin', false)}>D</button>
+                                    </div>
+                                    Admin
+                                </th>
+                                <th className='large'>
+                                    <div className='buttons'>
+                                        <button onClick={() => sortTable('name', true)}>A</button>
+                                        <button onClick={() => sortTable('name', false)}>D</button>
+                                    </div>
+                                    Name
+                                </th>
+                                <th className='large'>
+                                    <div className='buttons'>
+                                        <button onClick={() => sortTable('title', true)}>A</button>
+                                        <button onClick={() => sortTable('title', false)}>D</button>
+                                    </div>
+                                    Title
+                                </th>
+                                <th className='medium'>
+                                    <div className='buttons'>
+                                        <button onClick={() => sortTable('created', true)}>A</button>
+                                        <button onClick={() => sortTable('created', false)}>D</button>
+                                    </div>
+                                    Created
+                                </th>
                             </tr>
                             </thead>
                             <tbody>

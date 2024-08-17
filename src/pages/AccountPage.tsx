@@ -16,9 +16,8 @@ const AccountPage: React.FC = () => {
     const [name, setName] = useState('');
     const [title, setTitle] = useState('');
     const [username, setUsername] = useState('');
-    const [oldPassword, setOldPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [repeatPassword, setRepeatPassword] = useState('');
+    const [created, setCreated] = useState('');
+    const [updated, setUpdated] = useState('');
 
     const backToTableList = () => {
         navigate('/tables');
@@ -39,6 +38,8 @@ const AccountPage: React.FC = () => {
                 setName(response.data.name);
                 setTitle(response.data.title);
                 setUsername(response.data.username);
+                setCreated(response.data.created);
+                setUpdated(response.data.updated);
                 dispatch(setUserLoading(false));
             });
         }
@@ -84,50 +85,30 @@ const AccountPage: React.FC = () => {
                             <p>{username}</p>
                         </div>
                     </div>
-                    {admin
-                        ? <>
-                            <div className='form'>
-                                <div className='title'>
-                                    <p>Old password</p>
-                                </div>
-                                <div className='field'>
-                                    <input
-                                        type='password'
-                                        placeholder="Enter old password"
-                                        value={oldPassword}
-                                        onChange={(e) => setOldPassword(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className='form'>
-                                <div className='title'>
-                                    <p>New password</p>
-                                </div>
-                                <div className='field'>
-                                    <input
-                                        type='password'
-                                        placeholder="Enter new password"
-                                        value={newPassword}
-                                        onChange={(e) => setNewPassword(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className='form'>
-                                <div className='title'>
-                                    <p>Repeat password</p>
-                                </div>
-                                <div className='field'>
-                                    <input
-                                        type='password'
-                                        placeholder="Reenter new password"
-                                        value={repeatPassword}
-                                        onChange={(e) => setRepeatPassword(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                        </>
-                        : <></>
-                    }
+                    <div className='form'>
+                        <div className='title'>
+                            <p>Created at</p>
+                        </div>
+                        <div className='field'>
+                            <p>{created}</p>
+                        </div>
+                    </div>
+                    <div className='form'>
+                        <div className='title'>
+                            <p>Updated at</p>
+                        </div>
+                        <div className='field'>
+                            <p>{updated}</p>
+                        </div>
+                    </div>
+                    <div className='form'>
+                        <div className='title'>
+                            <p>Admin</p>
+                        </div>
+                        <div className='field'>
+                            <p>{admin ? 'True' : 'False'}</p>
+                        </div>
+                    </div>
                     <div className='form'>
                         <button
                             className='submit'

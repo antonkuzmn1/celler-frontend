@@ -46,6 +46,21 @@ const LogsPage: React.FC = () => {
         navigate('/tables');
     }
 
+    const sortTable = (column: keyof Log, asc: boolean) => {
+        const sorted = [...tables];
+        sorted.sort((a, b): number => {
+            if (a[column] > b[column]) return asc ? 1 : -1;
+            if (a[column] < b[column]) return asc ? -1 : 1;
+            return 0;
+        });
+        setTables(sorted);
+        setFilteredTables(sorted.filter((table: Log) => {
+            return (
+                table.initiator.username.includes(search)
+            );
+        }));
+    };
+
     useEffect(() => {
         if (authorized) {
             dispatch(setUserLoading(true));
@@ -97,11 +112,35 @@ const LogsPage: React.FC = () => {
                         ? <table>
                             <thead>
                             <tr>
-                                <th className='small'>ID</th>
-                                <th className='medium'>Initiator</th>
-                                <th className='small'>Action</th>
+                                <th className='small'>
+                                    <div className='buttons'>
+                                        <button onClick={() => sortTable('id', true)}>A</button>
+                                        <button onClick={() => sortTable('id', false)}>D</button>
+                                    </div>
+                                    ID
+                                </th>
+                                <th className='medium'>
+                                    <div className='buttons'>
+                                        {/*<button onClick={() => sortTable('initiator', true)}>A</button>*/}
+                                        {/*<button onClick={() => sortTable('initiator', false)}>D</button>*/}
+                                    </div>
+                                    Initiator
+                                </th>
+                                <th className='small'>
+                                    <div className='buttons'>
+                                        <button onClick={() => sortTable('action', true)}>A</button>
+                                        <button onClick={() => sortTable('action', false)}>D</button>
+                                    </div>
+                                    Action
+                                </th>
                                 {/*<th className='large'>New value</th>*/}
-                                <th className='medium'>Created</th>
+                                <th className='medium'>
+                                    <div className='buttons'>
+                                        <button onClick={() => sortTable('created', true)}>A</button>
+                                        <button onClick={() => sortTable('created', false)}>D</button>
+                                    </div>
+                                    Created
+                                </th>
                             </tr>
                             </thead>
                             <tbody>
