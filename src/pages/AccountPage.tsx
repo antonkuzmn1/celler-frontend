@@ -1,17 +1,28 @@
 import '../styles/pages/AccountPage.scss';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {AppDispatch, RootState} from "../utils/store.ts";
 import {useDispatch, useSelector} from "react-redux";
-import {setUserAdmin, setUserAuthorized} from "../slices/userSlice.ts";
+import {setUserAdmin, setUserAuthorized, setUserLoading} from "../slices/userSlice.ts";
 import axios from "axios";
 import Cookies from "js-cookie";
+import {baseUrl} from "../utils/baseUrl.ts";
+import {useNavigate} from "react-router-dom";
 
 const AccountPage: React.FC = () => {
+    const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const {authorized, admin} = useSelector((state: RootState) => state.user);
 
+    const [name, setName] = useState('');
+    const [title, setTitle] = useState('');
     const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
+
+    const backToTableList = () => {
+        navigate('/tables');
+    }
 
     const logout = async (event: any) => {
         event.preventDefault();
@@ -21,12 +32,28 @@ const AccountPage: React.FC = () => {
         dispatch(setUserAdmin(false));
     }
 
+    useEffect(() => {
+        if (authorized) {
+            dispatch(setUserLoading(true));
+            axios.get(baseUrl + '/security').then((response) => {
+                setName(response.data.name);
+                setTitle(response.data.title);
+                setUsername(response.data.username);
+                dispatch(setUserLoading(false));
+            });
+        }
+    }, [authorized]);
+
     return (
         <div className="AccountPage">
             <div className='topbar'>
-                <div className='left'/>
+                <div className='left'>
+                    <button onClick={backToTableList}>Back to table list</button>
+                </div>
                 <div className='center'/>
-                <div className='right'/>
+                <div className='right'>
+                    <p>{name}</p>
+                </div>
                 <div className='title'>
                     <h1>Account</h1>
                 </div>
@@ -35,30 +62,72 @@ const AccountPage: React.FC = () => {
                 <div className='content'>
                     <div className='form'>
                         <div className='title'>
-                            <p>Username</p>
+                            <p>Name</p>
                         </div>
                         <div className='field'>
-                            <input
-                                type='text'
-                                placeholder="Enter username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
+                            <p>{name}</p>
                         </div>
                     </div>
                     <div className='form'>
                         <div className='title'>
-                            <p>Password</p>
+                            <p>Title</p>
                         </div>
                         <div className='field'>
-                            <input
-                                type='password'
-                                placeholder="Enter password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
+                            <p>{title}</p>
                         </div>
                     </div>
+                    <div className='form'>
+                        <div className='title'>
+                            <p>Username</p>
+                        </div>
+                        <div className='field'>
+                            <p>{username}</p>
+                        </div>
+                    </div>
+                    {admin
+                        ? <>
+                            <div className='form'>
+                                <div className='title'>
+                                    <p>Old password</p>
+                                </div>
+                                <div className='field'>
+                                    <input
+                                        type='password'
+                                        placeholder="Enter old password"
+                                        value={oldPassword}
+                                        onChange={(e) => setOldPassword(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className='form'>
+                                <div className='title'>
+                                    <p>New password</p>
+                                </div>
+                                <div className='field'>
+                                    <input
+                                        type='password'
+                                        placeholder="Enter new password"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className='form'>
+                                <div className='title'>
+                                    <p>Repeat password</p>
+                                </div>
+                                <div className='field'>
+                                    <input
+                                        type='password'
+                                        placeholder="Reenter new password"
+                                        value={repeatPassword}
+                                        onChange={(e) => setRepeatPassword(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        </>
+                        : <></>
+                    }
                     <div className='form'>
                         <button
                             className='submit'
@@ -66,20 +135,6 @@ const AccountPage: React.FC = () => {
                             onClick={logout}
                         >
                             Logout
-                        </button>
-                        <button
-                            className='submit'
-                            type="submit"
-                            onClick={logout}
-                        >
-                            Reset
-                        </button>
-                        <button
-                            className='submit'
-                            type="submit"
-                            onClick={logout}
-                        >
-                            Confirm
                         </button>
                     </div>
                 </div>

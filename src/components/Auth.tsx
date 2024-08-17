@@ -47,7 +47,7 @@ const AuthPage: React.FC = () => {
                 <div className='center'/>
                 <div className='right'/>
                 <div className='title'>
-                    <h1>Account</h1>
+                    <h1>Authorization</h1>
                 </div>
             </div>
             <div className='frame'>

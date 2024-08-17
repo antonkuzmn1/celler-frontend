@@ -12,7 +12,31 @@
     border-bottom: 1px solid $borderColor;
 
     .left {
-      width: 100px;
+      width: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      button {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        outline: none;
+        border: 1px solid $borderColor;
+        background: none;
+        cursor: pointer;
+
+        font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 15px;
+        color: $textColor;
+
+        &:hover {
+          background-color: $borderColor;
+        }
+      }
     }
 
     .center {
@@ -20,7 +44,21 @@
     }
 
     .right {
-      width: 100px;
+      width: fit-content;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+
+      p {
+        margin: 0;
+        font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 15px;
+        color: $textColor;
+      }
     }
 
     .title {
@@ -48,7 +86,8 @@
     .content {
       display: flex;
       flex-direction: column;
-      width: fit-content;
+      width: auto;
+      max-width: 500px;
       margin: 0 auto;
       gap: 10px;
       padding: 10px;
@@ -59,12 +98,14 @@
         height: 40px;
 
         .title {
-          width: 150px;
+          flex-grow: 1;
           border-right: 1px solid $borderColor;
           padding: 10px;
           display: flex;
           justify-content: flex-end;
           align-items: center;
+          max-width: 100px;
+          min-width: 100px;
 
           p {
             margin: 0;
@@ -78,7 +119,11 @@
         }
 
         .field {
-          width: 300px;
+          flex-grow: 1;
+          display: flex;
+          justify-content: start;
+          align-items: center;
+
           input {
             width: calc(100% - 20px);
             height: calc(100% - 20px);
@@ -87,6 +132,17 @@
             border: none;
             outline: none;
 
+            font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 15px;
+            color: $textColor;
+          }
+
+          p {
+            padding: 10px;
+            margin: 0;
             font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
             font-style: normal;
             font-weight: 400;
@@ -104,6 +160,13 @@
           padding: 10px;
           background: none;
           cursor: pointer;
+
+          font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 12px;
+          line-height: 15px;
+          color: $textColor;
 
           &:hover {
             background-color: $borderColor;
