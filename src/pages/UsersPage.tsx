@@ -8,14 +8,14 @@ import axios from "axios";
 import {baseUrl} from "../utils/baseUrl.ts";
 
 export interface User {
-    id: number
-    created: string
-    updated: string
-    name: string,
-    title: string
-    username: string,
-    password: string,
-    admin: boolean,
+    id: number;
+    created: string;
+    updated: string;
+    name: string;
+    title: string;
+    username: string;
+    password: string;
+    admin: boolean;
 }
 
 const UsersPage: React.FC = () => {
@@ -42,7 +42,6 @@ const UsersPage: React.FC = () => {
             axios.get(baseUrl + '/security').then((response) => {
                 setName(response.data.name);
                 axios.get<User[]>(baseUrl + '/security/user').then((response) => {
-                    console.log(response.data);
                     setTables(response.data);
                     dispatch(setUserLoading(false));
                 }).catch((_error) => {

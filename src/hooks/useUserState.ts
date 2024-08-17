@@ -16,20 +16,19 @@ export const useUserState = () => {
         dispatch(setUserAdmin(false));
     }
 
-    useEffect(() => {
+    const check = () => {
         dispatch(setUserLoading(true));
         const token = Cookies.get('token');
-        console.log(token);
 
         if (token) {
             axios.get(baseUrl + '/security', {
                 headers: {'Authorization': `Bearer ${token}`}
             }).then((response) => {
-                    Cookies.set('token', token, {expires: 1});
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    dispatch(setUserAuthorized(true));
-                    dispatch(setUserAdmin(!!response.data.admin));
-                    dispatch(setUserLoading(false));
+                Cookies.set('token', token, {expires: 1});
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                dispatch(setUserAuthorized(true));
+                dispatch(setUserAdmin(!!response.data.admin));
+                dispatch(setUserLoading(false));
             }).catch((_error) => {
                 console.error(_error);
                 clear();
@@ -39,5 +38,16 @@ export const useUserState = () => {
             clear();
             dispatch(setUserLoading(false));
         }
+    }
+
+    useEffect(() => {
+        check();
+
+        const intervalId = setInterval(() => {
+            console.log('check auth');
+            check();
+        }, 1000 * 60 * 10);
+
+        return () => clearInterval(intervalId);
     }, [dispatch]);
 }
