@@ -7,9 +7,9 @@ import axios from "axios";
 import {baseUrl} from "../utils/baseUrl.ts";
 import {setUserLoading} from "../slices/userSlice.ts";
 import Dialog from "../components/Dialog.tsx";
-import DialogGroupList from "../components/DialogGroupList.tsx";
 import DialogConfirm from "../components/DialogConfirm.tsx";
 import {User} from "./UsersPage.tsx";
+import DialogTableGroupList from "../components/DialogTableGroupList.tsx";
 
 export interface Table {
     id: number;
@@ -275,12 +275,12 @@ const TablesPage: React.FC = () => {
                                             >
                                                 Edit
                                             </button>
-                                            <button>Columns</button>
                                             <button
                                                 onClick={() => dialogGroupsShow(table.id)}
                                             >
                                                 Groups
                                             </button>
+                                            <button>Columns</button>
                                             <button>Open</button>
                                         </td>
                                         <td className='small'>{table.id}</td>
@@ -352,17 +352,17 @@ const TablesPage: React.FC = () => {
                     : <></>}
                 </Dialog>
                 : <></>}
-            {dialogTableGroupOpen
-                ? <DialogGroupList
-                    cancel={dialogGroupsClose}
-                    id={dialogDataId}
-                />
-                : <></>}
             {dialogConfirmOpen
                 ? <DialogConfirm
                     text={'Are you sure?'}
                     cancel={dialogConfirmClose}
                     confirm={deleteUser}
+                />
+                : <></>}
+            {dialogTableGroupOpen
+                ? <DialogTableGroupList
+                    cancel={dialogGroupsClose}
+                    id={dialogDataId}
                 />
                 : <></>}
         </div>

@@ -17,7 +17,7 @@ import Auth from "./Auth.tsx";
 import NotSupported from "./NotSupported.tsx";
 
 const router = createBrowserRouter([
-    {path: "*", element: <Navigate to="/account"/>},
+    {path: "*", element: <Navigate to="/tables"/>},
     {path: "/account", element: <AccountPage/>},
     {path: "/tables", element: <TablesPage/>},
     {path: "/tables/:id", element: <TablePage/>},
