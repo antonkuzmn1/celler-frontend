@@ -8,6 +8,7 @@ import axios from "axios";
 import {baseUrl} from "../utils/baseUrl.ts";
 import Dialog from "../components/Dialog.tsx";
 import DialogConfirm from "../components/DialogConfirm.tsx";
+import DialogGroupList from "../components/DialogGroupList.tsx";
 
 export interface User {
     id: number;
@@ -18,6 +19,7 @@ export interface User {
     username: string;
     password: string;
     admin: boolean;
+    userGroups: any[];
 }
 
 const UsersPage: React.FC = () => {
@@ -40,7 +42,7 @@ const UsersPage: React.FC = () => {
     const [dialogDataPassword1, setDialogDataPassword1] = useState<string>('');
     const [dialogDataPassword2, setDialogDataPassword2] = useState<string>('');
     const [dialogConfirmOpen, setDialogConfirmOpen] = useState(false);
-
+    const [dialogUserGroupOpen, setDialogUserGroupOpen] = useState<boolean>(false);
 
     const goToAccount = () => {
         navigate('/account');
@@ -68,6 +70,7 @@ const UsersPage: React.FC = () => {
             axios.get<User>(baseUrl + '/security/user', {
                 params: {id}
             }).then(response => {
+                console.log(response)
                 setDialogDataId(response.data.id);
                 setDialogDataCreated(response.data.created);
                 setDialogDataUpdated(response.data.updated);
@@ -143,6 +146,15 @@ const UsersPage: React.FC = () => {
 
     const dialogConfirmClose = () => {
         setDialogConfirmOpen(false);
+    }
+
+    const dialogGroupsShow = (id: number) => {
+        setDialogUserGroupOpen(true);
+        setDialogDataId(id);
+    }
+
+    const dialogGroupsClose = () => {
+        setDialogUserGroupOpen(false);
     }
 
     const sortTable = (column: keyof User, asc: boolean) => {
@@ -279,8 +291,7 @@ const UsersPage: React.FC = () => {
                                                 Edit
                                             </button>
                                             <button
-                                                onClick={() => {
-                                                }}
+                                                onClick={() => dialogGroupsShow(table.id)}
                                             >
                                                 Groups
                                             </button>
@@ -407,6 +418,12 @@ const UsersPage: React.FC = () => {
                     </>)
                     : <></>}
                 </Dialog>
+                : <></>}
+            {dialogUserGroupOpen
+                ? <DialogGroupList
+                    cancel={dialogGroupsClose}
+                    id={dialogDataId}
+                />
                 : <></>}
             {dialogConfirmOpen
                 ? <DialogConfirm
