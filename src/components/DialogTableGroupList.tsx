@@ -1,70 +1,70 @@
-import '../styles/components/DialogUserList.scss';
+import '../styles/components/DialogTableGroupList.scss';
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {baseUrl} from "../utils/baseUrl.ts";
-import {User} from "../pages/UsersPage.tsx";
 import {Group} from "../pages/GroupsPage.tsx";
 import {useDispatch} from "react-redux";
 import {setUserLoading} from "../slices/userSlice.ts";
+import {Table} from "../pages/TablesPage.tsx";
 
-interface DialogUserListProps {
+interface DialogTableGroupListProps {
     cancel: () => void;
     id: number;
 }
 
-const DialogUserList: React.FC<DialogUserListProps> = (props: DialogUserListProps) => {
+const DialogTableGroupList: React.FC<DialogTableGroupListProps> = (props: DialogTableGroupListProps) => {
     const dispatch = useDispatch();
 
-    const [groupUsers, setGroupUsers] = useState<any[]>([]);
-    const [users, setUsers] = useState<any[]>([]);
+    const [tableGroups, setTableGroups] = useState<any[]>([]);
+    const [groups, setGroups] = useState<any[]>([]);
 
-    const getGroup = () => {
-        axios.get<User>(baseUrl + '/security/group', {
+    const getTable = () => {
+        axios.get<Table>(baseUrl + '/table', {
             params: {id: props.id}
         }).then(response => {
-            setGroupUsers(response.data.userGroups);
+            setTableGroups(response.data.tableGroups);
         });
     }
 
-    const getUsers = () => {
-        axios.get<Group[]>(baseUrl + '/security/user', {}).then(response => {
-            setUsers(response.data);
+    const getGroups = () => {
+        axios.get<Group[]>(baseUrl + '/security/group', {}).then(response => {
+            setGroups(response.data);
         }).finally(() => dispatch(setUserLoading(false)));
     }
 
-    const addUser = (userId: number) => {
+    const addGroup = (groupId: number) => {
         dispatch(setUserLoading(true));
-        axios.post(baseUrl + '/security/group/user', {
-            userId: userId,
-            groupId: props.id,
+        axios.post(baseUrl + '/table/group', {
+            groupId: groupId,
+            userId: props.id,
         }).then(_response => {
-            getGroup();
-            getUsers();
+            getTable();
+            getGroups();
         }).finally(() => dispatch(setUserLoading(false)));
     }
 
-    const removeUser = (userId: number) => {
+    const removeGroup = (groupId: number) => {
         dispatch(setUserLoading(true));
-        axios.delete(baseUrl + '/security/group/user', {
+        axios.delete(baseUrl + '/security/user/group', {
             data: {
-                groupId: props.id,
-                userId: userId,
+                userId: props.id,
+                groupId: groupId,
             }
         }).then(response => {
             console.log(response);
-            getGroup();
-            getUsers();
+            getTable();
+            getGroups();
         }).finally(() => dispatch(setUserLoading(false)));
     }
 
     useEffect(() => {
         dispatch(setUserLoading(true));
-        getGroup();
-        getUsers();
+        getTable();
+        getGroups();
     }, []);
 
     return (
-        <div className='DialogUserList' onClick={props.cancel}>
+        <div className='DialogGroupList' onClick={props.cancel}>
             <div
                 className='window'
                 onClick={(e: React.MouseEvent) => e.stopPropagation()}
@@ -82,15 +82,15 @@ const DialogUserList: React.FC<DialogUserListProps> = (props: DialogUserListProp
                 </div>
                 <div className='center'>
                     <div className={'left'}>
-                        {groupUsers.map((user: any) => {
+                        {tableGroups.map((group: any) => {
                             return (
-                                <div key={user.user.id} className='row'>
+                                <div key={group.groupId} className='row'>
                                     <div className={'left'}>
-                                        <p>{user.user.username}</p>
+                                        <p>{group.groupName}</p>
                                     </div>
                                     <div className={'right'}>
                                         <button
-                                            onClick={() => removeUser(user.user.id)}
+                                            onClick={() => removeGroup(group.groupId)}
                                         >
                                             remove
                                         </button>
@@ -100,15 +100,15 @@ const DialogUserList: React.FC<DialogUserListProps> = (props: DialogUserListProp
                         })}
                     </div>
                     <div className={'right'}>
-                        {users.map((user: any) => {
+                        {groups.map((group: any) => {
                             return (
-                                <div key={user.id} className='row'>
+                                <div key={group.id} className='row'>
                                     <div className={'left'}>
-                                        <p>{user.username}</p>
+                                        <p>{group.name}</p>
                                     </div>
                                     <div className={'right'}>
                                         <button
-                                            onClick={() => addUser(user.id)}
+                                            onClick={() => addGroup(group.id)}
                                         >
                                             add
                                         </button>
@@ -125,4 +125,4 @@ const DialogUserList: React.FC<DialogUserListProps> = (props: DialogUserListProp
         </div>
     )
 }
-export default DialogUserList
+export default DialogGroupList
