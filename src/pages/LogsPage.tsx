@@ -96,7 +96,7 @@ const LogsPage: React.FC = () => {
                     <button onClick={goToAccount}>{name}</button>
                 </div>
                 <div className='title'>
-                    <p>{filteredTables.length.toString()} tables</p>
+                    <p>{filteredTables.length.toString()} rows</p>
                     <input
                         type='search'
                         placeholder='Search'

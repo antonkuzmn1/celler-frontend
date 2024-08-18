@@ -34,7 +34,7 @@ const App: React.FC = () => {
 
     return (
         <div className='App'>
-            {deviceSize === DeviceSize.Small
+            {deviceSize !== DeviceSize.Large
                 ? <NotSupported/>
                 : <RouterProvider router={router}/>
             }
