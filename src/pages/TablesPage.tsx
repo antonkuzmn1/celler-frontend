@@ -38,28 +38,7 @@ const TablesPage: React.FC = () => {
     const [dialogDataTitle, setDialogDataTitle] = useState<string>('');
     const [dialogConfirmOpen, setDialogConfirmOpen] = useState(false);
     const [dialogTableGroupOpen, setDialogTableGroupOpen] = useState<boolean>(false);
-
     const [menuDropdownActive, setMenuDropdownActive] = useState<boolean>(false)
-
-    const toggleDropdown = () => {
-        setMenuDropdownActive(!menuDropdownActive);
-    }
-
-    const goToAccount = () => {
-        navigate('/account');
-    }
-
-    const goToUsers = () => {
-        navigate('/users');
-    }
-
-    const goToGroups = () => {
-        navigate('/groups');
-    }
-
-    const goToLogs = () => {
-        navigate('/logs');
-    }
 
     const openDialog = (id: number = 0) => {
         setDialogOpen(true);
@@ -86,21 +65,17 @@ const TablesPage: React.FC = () => {
         }
     }
 
-    const closeDialog = () => {
-        setDialogOpen(false);
-    }
-
     const deleteUser = () => {
         dispatch(setUserLoading(true));
         axios.delete(baseUrl + '/table', {
             data: {id: dialogDataId}
         }).then(response => {
             console.log(response);
-            closeDialog();
+            setDialogOpen(false);
             getTable();
         }).finally(() => {
             dispatch(setUserLoading(false));
-            dialogConfirmClose();
+            setDialogConfirmOpen(false);
         });
     }
 
@@ -115,7 +90,7 @@ const TablesPage: React.FC = () => {
                 name, title
             }).then(response => {
                 console.log(response);
-                closeDialog();
+                setDialogOpen(false);
                 getTable();
             }).finally(() => {
                 dispatch(setUserLoading(false));
@@ -125,7 +100,7 @@ const TablesPage: React.FC = () => {
                 id, name, title
             }).then(response => {
                 console.log(response);
-                closeDialog();
+                setDialogOpen(false);
                 getTable();
             }).finally(() => {
                 dispatch(setUserLoading(false));
@@ -133,21 +108,9 @@ const TablesPage: React.FC = () => {
         }
     }
 
-    const dialogConfirmShow = () => {
-        setDialogConfirmOpen(true);
-    }
-
-    const dialogConfirmClose = () => {
-        setDialogConfirmOpen(false);
-    }
-
     const dialogGroupsShow = (id: number) => {
         setDialogTableGroupOpen(true);
         setDialogDataId(id);
-    }
-
-    const dialogGroupsClose = () => {
-        setDialogTableGroupOpen(false);
     }
 
     const sortTable = (column: keyof Table, asc: boolean) => {
@@ -200,21 +163,21 @@ const TablesPage: React.FC = () => {
             <div className='topbar'>
                 <div className='left'>
                     {admin
-                        ? <button onClick={toggleDropdown}>Menu</button>
+                        ? <button onClick={() => setMenuDropdownActive(!menuDropdownActive)}>Menu</button>
                         : <></>
                     }
                     {menuDropdownActive
                         ? <div className='dropdown'>
-                            <button onClick={goToUsers}>Users</button>
-                            <button onClick={goToGroups}>Groups</button>
-                            <button onClick={goToLogs}>Logs</button>
+                            <button onClick={() => navigate('/users')}>Users</button>
+                            <button onClick={() => navigate('/groups')}>Groups</button>
+                            <button onClick={() => navigate('/logs')}>Logs</button>
                         </div>
                         : <></>
                     }
                 </div>
                 <div className='center'/>
                 <div className='right'>
-                    <button onClick={goToAccount}>{name}</button>
+                    <button onClick={() => navigate('/account')}>{name}</button>
                 </div>
                 <div className='title'>
                     <p>{filteredTables.length.toString()} rows</p>
@@ -230,7 +193,7 @@ const TablesPage: React.FC = () => {
                 </div>
             </div>
             <div className='frame'>
-            <div className='content'>
+                <div className='content'>
                     {filteredTables.length > 0
                         ? <table>
                             <thead>
@@ -282,7 +245,11 @@ const TablesPage: React.FC = () => {
                                             >
                                                 Groups
                                             </button>
-                                            <button>Columns</button>
+                                            <button
+                                                onClick={() => navigate(`/columns/${table.id}`)}
+                                            >
+                                                Columns
+                                            </button>
                                             <button>Open</button>
                                         </td>
                                         <td className='small'>{table.id}</td>
@@ -301,8 +268,8 @@ const TablesPage: React.FC = () => {
             {dialogOpen
                 ? <Dialog
                     title={dialogDataId > 0 ? 'Edit Table' : 'New Table'}
-                    close={closeDialog}
-                    delete={dialogDataId > 0 ? dialogConfirmShow : undefined}
+                    close={() => setDialogOpen(false)}
+                    delete={dialogDataId > 0 ? () => setDialogConfirmOpen(true) : undefined}
                     confirm={confirmUser}
                 >{!loading
                     ? (<>
@@ -357,13 +324,13 @@ const TablesPage: React.FC = () => {
             {dialogConfirmOpen
                 ? <DialogConfirm
                     text={'Are you sure?'}
-                    cancel={dialogConfirmClose}
+                    cancel={() => setDialogConfirmOpen(false)}
                     confirm={deleteUser}
                 />
                 : <></>}
             {dialogTableGroupOpen
                 ? <DialogTableGroupList
-                    cancel={dialogGroupsClose}
+                    cancel={() => setDialogTableGroupOpen(false)}
                     id={dialogDataId}
                 />
                 : <></>}

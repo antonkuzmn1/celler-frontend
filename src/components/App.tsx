@@ -15,12 +15,14 @@ import {useUserState} from "../hooks/useUserState.ts";
 import Loading from "./Loading.tsx";
 import Auth from "./Auth.tsx";
 import NotSupported from "./NotSupported.tsx";
+import ColumnsPage from "../pages/ColumnsPage.tsx";
 
 const router = createBrowserRouter([
     {path: "*", element: <Navigate to="/tables"/>},
     {path: "/account", element: <AccountPage/>},
     {path: "/tables", element: <TablesPage/>},
     {path: "/tables/:id", element: <TablePage/>},
+    {path: "/columns/:id", element: <ColumnsPage/>},
     {path: "/users", element: <UsersPage/>},
     {path: "/groups", element: <GroupsPage/>},
     {path: "/logs", element: <LogsPage/>},

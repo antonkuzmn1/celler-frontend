@@ -7,7 +7,7 @@ const Loading: React.FC = () => {
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 100 100"
-                enable-background="new 0 0 0 0"
+                enableBackground="new 0 0 0 0"
             >
                 <path
                     fill="white"
