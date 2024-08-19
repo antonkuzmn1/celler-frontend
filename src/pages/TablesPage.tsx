@@ -17,6 +17,8 @@ export interface Table {
     name: string;
     title: string;
     tableGroups: any[];
+    tableGroupsCreate: any[];
+    tableGroupsDelete: any[];
 }
 
 const TablesPage: React.FC = () => {

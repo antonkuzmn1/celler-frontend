@@ -73,132 +73,134 @@
     }
 
     .center {
-      display: flex;
+      display: grid;
       padding: 10px;
       grid-gap: 10px;
       max-height: 70vh;
 
-      .left {
-        width: 300px;
-        overflow-y: auto;
+      .field {
+        display: grid;
+        grid-gap: 10px;
         border: 1px solid $borderColor;
-      }
+        padding: 10px;
 
-      .right {
-        width: 300px;
-        overflow-y: auto;
-        border: 1px solid $borderColor;
-      }
+        .title {
+          text-align: center;
+          margin: 0;
+        }
 
-      .left,
-      .right {
-        .row {
+        .groups {
           display: flex;
+          gap: 10px;
 
           .left {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: start;
-            padding: 10px;
+            border: 1px solid $borderColor;
+            width: 300px;
+            max-height: 15vh;
+            overflow-y: auto;
 
-            p {
-              font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-              font-style: normal;
-              font-weight: 400;
-              font-size: 12px;
-              line-height: 15px;
-              color: $textColor;
-              text-align: center;
-              margin: 0;
+            .row {
+              display: flex;
+
+              .left {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: start;
+                padding: 10px;
+
+                p {
+                  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+                  font-style: normal;
+                  font-weight: 400;
+                  font-size: 12px;
+                  line-height: 15px;
+                  color: $textColor;
+                  text-align: center;
+                  margin: 0;
+                }
+              }
+
+              .right {
+                width: 80px;
+
+                button {
+                  margin: 0;
+                  width: 100%;
+                  height: 100%;
+                  outline: none;
+                  border: none;
+                  background: none;
+                  cursor: pointer;
+
+                  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+                  font-style: normal;
+                  font-weight: 400;
+                  font-size: 12px;
+                  line-height: 15px;
+                  color: $textColor;
+
+                  &:hover {
+                    background-color: $borderColor;
+                  }
+                }
+              }
             }
           }
 
           .right {
-            width: 80px;
+            border: 1px solid $borderColor;
+            width: 300px;
+            max-height: 15vh;
+            overflow-y: auto;
 
-            button {
-              margin: 0;
-              width: 100%;
-              height: 100%;
-              outline: none;
-              border: none;
-              background: none;
-              cursor: pointer;
+            .row {
+              display: flex;
 
-              font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-              font-style: normal;
-              font-weight: 400;
-              font-size: 12px;
-              line-height: 15px;
-              color: $textColor;
+              .left {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: start;
+                padding: 10px;
 
-              &:hover {
-                background-color: $borderColor;
+                p {
+                  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+                  font-style: normal;
+                  font-weight: 400;
+                  font-size: 12px;
+                  line-height: 15px;
+                  color: $textColor;
+                  text-align: center;
+                  margin: 0;
+                }
+              }
+
+              .right {
+                width: 80px;
+
+                button {
+                  margin: 0;
+                  width: 100%;
+                  height: 100%;
+                  outline: none;
+                  border: none;
+                  background: none;
+                  cursor: pointer;
+
+                  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+                  font-style: normal;
+                  font-weight: 400;
+                  font-size: 12px;
+                  line-height: 15px;
+                  color: $textColor;
+
+                  &:hover {
+                    background-color: $borderColor;
+                  }
+                }
               }
             }
-          }
-        }
-      }
-
-      .field {
-        display: flex;
-        height: 40px;
-        border: 1px solid $borderColor;
-
-        .left {
-          width: 130px;
-          display: flex;
-          align-items: center;
-          justify-content: flex-end;
-          padding: 10px;
-          border-right: 1px solid $borderColor;
-
-          p {
-            font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-            font-style: normal;
-            font-weight: 400;
-            font-size: 12px;
-            line-height: 15px;
-            color: $textColor;
-            text-align: center;
-            margin: 0;
-          }
-        }
-
-        .right {
-          width: 300px;
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-
-          input {
-            width: 100%;
-            height: calc(100% - 20px);
-            outline: none;
-            border: none;
-            padding: 10px;
-
-            font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-            font-style: normal;
-            font-weight: 400;
-            font-size: 12px;
-            line-height: 15px;
-            color: $textColor;
-            text-align: left;
-            margin: 0;
-          }
-
-          p {
-            font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-            font-style: normal;
-            font-weight: 400;
-            font-size: 12px;
-            line-height: 15px;
-            color: $textColor;
-            text-align: center;
-            margin: 0;
-            padding: 10px;
           }
         }
       }

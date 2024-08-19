@@ -1,10 +1,12 @@
 import '../styles/components/DialogTableGroupList.scss';
-import React from "react";
-// import axios from "axios";
-// import {baseUrl} from "../utils/baseUrl.ts";
-// import {Group} from "../pages/GroupsPage.tsx";
-// import {useDispatch} from "react-redux";
-// import {setUserLoading} from "../slices/userSlice.ts";
+import React, {useEffect, useState} from "react";
+import axios from "axios";
+import {baseUrl} from "../utils/baseUrl.ts";
+import {Group} from "../pages/GroupsPage.tsx";
+import {useDispatch} from "react-redux";
+import {setUserLoading} from "../slices/userSlice.ts";
+import {Table} from "../pages/TablesPage.tsx";
+
 // import {Table} from "../pages/TablesPage.tsx";
 
 interface DialogTableGroupListProps {
@@ -13,55 +15,130 @@ interface DialogTableGroupListProps {
 }
 
 const DialogTableGroupList: React.FC<DialogTableGroupListProps> = (props: DialogTableGroupListProps) => {
-    // const dispatch = useDispatch();
-    //
-    // const [tableGroups, setTableGroups] = useState<any[]>([]);
-    // const [groups, setGroups] = useState<any[]>([]);
+    const dispatch = useDispatch();
+    const [groups, setGroups] = useState<any[]>([]);
+    const [tableGroups, setTableGroups] = useState<any[]>([]);
+    const [tableGroupsCreate, setTableGroupsCreate] = useState<any[]>([]);
+    const [tableGroupsDelete, setTableGroupsDelete] = useState<any[]>([]);
 
-    // const getTable = () => {
-    //     axios.get<Table>(baseUrl + '/table', {
+    const getGroups = () => {
+        axios.get<Group[]>(baseUrl + '/security/group', {}).then(response => {
+            setGroups(response.data);
+        }).finally(() => dispatch(setUserLoading(false)));
+    }
+
+    const getTableGroups = () => {
+        axios.get<Table>(baseUrl + '/table', {
+            params: {id: props.id}
+        }).then(response => {
+            console.log(response.data);
+            setTableGroups(response.data.tableGroups);
+            setTableGroupsCreate(response.data.tableGroupsCreate);
+            setTableGroupsDelete(response.data.tableGroupsDelete);
+        });
+    }
+
+    // const getTableGroupsCreate = () => {
+    //     axios.get<Table>(baseUrl + '/tableCreate', {
     //         params: {id: props.id}
     //     }).then(response => {
-    //         setTableGroups(response.data.tableGroups);
+    //         console.log(response.data);
+    //         setTableGroupsCreate(response.data.tableGroupsCreate);
+    //     });
+    // }
+    //
+    // const getTableGroupsDelete = () => {
+    //     axios.get<Table>(baseUrl + '/tableDelete', {
+    //         params: {id: props.id}
+    //     }).then(response => {
+    //         console.log(response.data);
+    //         setTableGroupsDelete(response.data.tableGroupsDelete);
     //     });
     // }
 
-    // const getGroups = () => {
-    //     axios.get<Group[]>(baseUrl + '/security/group', {}).then(response => {
-    //         setGroups(response.data);
-    //     }).finally(() => dispatch(setUserLoading(false)));
-    // }
+    const addTableGroup = (groupId: number) => {
+        dispatch(setUserLoading(true));
+        console.log(props.id, groupId);
+        axios.post(baseUrl + '/table/group', {
+            groupId: groupId,
+            tableId: props.id,
+        }).then(_response => {
+            getTableGroups();
+            getGroups();
+        }).finally(() => dispatch(setUserLoading(false)));
+    }
 
-    // const addGroup = (groupId: number) => {
-    //     dispatch(setUserLoading(true));
-    //     axios.post(baseUrl + '/table/group', {
-    //         groupId: groupId,
-    //         userId: props.id,
-    //     }).then(_response => {
-    //         getTable();
-    //         getGroups();
-    //     }).finally(() => dispatch(setUserLoading(false)));
-    // }
+    const addTableGroupCreate = (groupId: number) => {
+        dispatch(setUserLoading(true));
+        console.log(props.id, groupId);
+        axios.post(baseUrl + '/table/groupCreate', {
+            groupId: groupId,
+            tableId: props.id,
+        }).then(_response => {
+            getTableGroups();
+            getGroups();
+        }).finally(() => dispatch(setUserLoading(false)));
+    }
 
-    // const removeGroup = (groupId: number) => {
-    //     dispatch(setUserLoading(true));
-    //     axios.delete(baseUrl + '/security/user/group', {
-    //         data: {
-    //             userId: props.id,
-    //             groupId: groupId,
-    //         }
-    //     }).then(response => {
-    //         console.log(response);
-    //         getTable();
-    //         getGroups();
-    //     }).finally(() => dispatch(setUserLoading(false)));
-    // }
+    const addTableGroupDelete = (groupId: number) => {
+        dispatch(setUserLoading(true));
+        console.log(props.id, groupId);
+        axios.post(baseUrl + '/table/groupDelete', {
+            groupId: groupId,
+            tableId: props.id,
+        }).then(_response => {
+            getTableGroups();
+            getGroups();
+        }).finally(() => dispatch(setUserLoading(false)));
+    }
 
-    // useEffect(() => {
-    //     dispatch(setUserLoading(true));
-    //     getTable();
-    //     getGroups();
-    // }, []);
+    const removeTableGroup = (groupId: number) => {
+        dispatch(setUserLoading(true));
+        axios.delete(baseUrl + '/table/group', {
+            data: {
+                tableId: props.id,
+                groupId: groupId,
+            }
+        }).then(response => {
+            console.log(response);
+            getTableGroups();
+            getGroups();
+        }).finally(() => dispatch(setUserLoading(false)));
+    }
+
+    const removeTableGroupCreate = (groupId: number) => {
+        dispatch(setUserLoading(true));
+        axios.delete(baseUrl + '/table/groupCreate', {
+            data: {
+                tableId: props.id,
+                groupId: groupId,
+            }
+        }).then(response => {
+            console.log(response);
+            getTableGroups();
+            getGroups();
+        }).finally(() => dispatch(setUserLoading(false)));
+    }
+
+    const removeTableGroupDelete = (groupId: number) => {
+        dispatch(setUserLoading(true));
+        axios.delete(baseUrl + '/table/groupDelete', {
+            data: {
+                tableId: props.id,
+                groupId: groupId,
+            }
+        }).then(response => {
+            console.log(response);
+            getTableGroups();
+            getGroups();
+        }).finally(() => dispatch(setUserLoading(false)));
+    }
+
+    useEffect(() => {
+        dispatch(setUserLoading(true));
+        getTableGroups();
+        getGroups();
+    }, []);
 
     return (
         <div className='DialogTableGroupList' onClick={props.cancel}>
@@ -81,6 +158,117 @@ const DialogTableGroupList: React.FC<DialogTableGroupListProps> = (props: Dialog
                     </div>
                 </div>
                 <div className='center'>
+                    <div className={'field'}>
+                        <p className={'title'}>Create</p>
+                        <div className={'groups'}>
+                            <div className={'left'}>
+                                {tableGroups.map((tableGroup: any) => (
+                                    <div key={tableGroup.groupId} className={'row'}>
+                                        <div className={'left'}>
+                                            <p>{tableGroup.group.name}</p>
+                                        </div>
+                                        <div className={'right'}>
+                                            <button
+                                                onClick={() => removeTableGroup(tableGroup.groupId)}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className={'right'}>
+                                {groups.map((group: Group) => (
+                                    <div key={group.id} className={'row'}>
+                                        <div className={'left'}>
+                                            <p>{group.name}</p>
+                                        </div>
+                                        <div className={'right'}>
+                                            <button
+                                                onClick={() => addTableGroup(group.id)}
+                                            >
+                                                Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={'field'}>
+                        <p className={'title'}>Edit</p>
+                        <div className={'groups'}>
+                            <div className={'left'}>
+                                {tableGroupsCreate.map((tableGroup: any) => (
+                                    <div key={tableGroup.groupId} className={'row'}>
+                                        <div className={'left'}>
+                                            <p>{tableGroup.group.name}</p>
+                                        </div>
+                                        <div className={'right'}>
+                                            <button
+                                                onClick={() => removeTableGroupCreate(tableGroup.groupId)}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className={'right'}>
+                                {groups.map((group: Group) => (
+                                    <div key={group.id} className={'row'}>
+                                        <div className={'left'}>
+                                            <p>{group.name}</p>
+                                        </div>
+                                        <div className={'right'}>
+                                            <button
+                                                onClick={() => addTableGroupCreate(group.id)}
+                                            >
+                                                Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={'field'}>
+                        <p className={'title'}>Delete</p>
+                        <div className={'groups'}>
+                            <div className={'left'}>
+                                {tableGroupsDelete.map((tableGroup: any) => (
+                                    <div key={tableGroup.groupId} className={'row'}>
+                                        <div className={'left'}>
+                                            <p>{tableGroup.group.name}</p>
+                                        </div>
+                                        <div className={'right'}>
+                                            <button
+                                                onClick={() => removeTableGroupDelete(tableGroup.groupId)}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className={'right'}>
+                                {groups.map((group: Group) => (
+                                    <div key={group.id} className={'row'}>
+                                        <div className={'left'}>
+                                            <p>{group.name}</p>
+                                        </div>
+                                        <div className={'right'}>
+                                            <button
+                                                onClick={() => addTableGroupDelete(group.id)}
+                                            >
+                                                Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                     {/*<div className={'left'}>*/}
                     {/*    {tableGroups.map((group: any) => {*/}
                     {/*        return (*/}
@@ -93,24 +281,6 @@ const DialogTableGroupList: React.FC<DialogTableGroupListProps> = (props: Dialog
                     {/*                        onClick={() => removeGroup(group.groupId)}*/}
                     {/*                    >*/}
                     {/*                        remove*/}
-                    {/*                    </button>*/}
-                    {/*                </div>*/}
-                    {/*            </div>*/}
-                    {/*        )*/}
-                    {/*    })}*/}
-                    {/*</div>*/}
-                    {/*<div className={'right'}>*/}
-                    {/*    {groups.map((group: any) => {*/}
-                    {/*        return (*/}
-                    {/*            <div key={group.id} className='row'>*/}
-                    {/*                <div className={'left'}>*/}
-                    {/*                    <p>{group.name}</p>*/}
-                    {/*                </div>*/}
-                    {/*                <div className={'right'}>*/}
-                    {/*                    <button*/}
-                    {/*                        onClick={() => addGroup(group.id)}*/}
-                    {/*                    >*/}
-                    {/*                        add*/}
                     {/*                    </button>*/}
                     {/*                </div>*/}
                     {/*            </div>*/}
