@@ -138,6 +138,92 @@
           }
         }
       }
+
+      .items {
+        display: grid;
+        grid-gap: 10px;
+        max-height: 30vh;
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid $borderColor;
+
+        .item {
+          border: 1px solid $borderColor;
+          width: 100%;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .left {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            border: none;
+
+            p {
+              font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+              font-style: normal;
+              font-weight: 400;
+              font-size: 12px;
+              line-height: 15px;
+              color: $textColor;
+              text-align: center;
+              width: 100%;
+              height: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: flex-end;
+              padding: 10px;
+              margin: 0;
+            }
+
+            input {
+              outline: none;
+              border: none;
+              width: 100%;
+              height: calc(100% - 20px);
+              padding: 10px;
+              font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+              font-style: normal;
+              font-weight: 400;
+              font-size: 12px;
+              line-height: 15px;
+              color: $textColor;
+              text-align: right;
+            }
+          }
+
+          .right {
+            width: 80px;
+            border: none;
+            border-left: 1px solid $borderColor;
+            height: 100%;
+
+            button {
+              margin: 0;
+              width: 100%;
+              height: 100%;
+              outline: none;
+              border: none;
+              background: none;
+              cursor: pointer;
+
+              font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+              font-style: normal;
+              font-weight: 400;
+              font-size: 12px;
+              line-height: 15px;
+              color: $textColor;
+
+              &:hover {
+                background-color: $borderColor;
+              }
+            }
+          }
+        }
+      }
     }
 
     .bottom {
