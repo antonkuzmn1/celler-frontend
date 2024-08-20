@@ -8,6 +8,7 @@ import axios from "axios";
 import {baseUrl} from "../utils/baseUrl.ts";
 import Dialog from "../components/Dialog.tsx";
 import DialogConfirm from "../components/DialogConfirm.tsx";
+import DialogColumnGroupList from "../components/DialogColumnGroupList.tsx";
 
 export type Dropdown = { id: number, text: string };
 
@@ -20,12 +21,13 @@ export interface Column {
     type: string,
     dropdown: Dropdown[],
     order: number
+    columnGroups: any[],
 }
 
 interface ColumnsPageProps {
 }
 
-const ColumnsPage: React.FC<ColumnsPageProps> = (props: ColumnsPageProps) => {
+const ColumnsPage: React.FC<ColumnsPageProps> = (_props: ColumnsPageProps) => {
     const {id} = useParams<{ id: string }>();
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
@@ -46,6 +48,7 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (props: ColumnsPageProps) => {
     const [dialogDataDropdown, setDialogDataDropdown] = useState<Dropdown[]>([]);
     const [dialogDataDropdownText, setDialogDataDropdownText] = useState<string>('');
     const [dialogConfirmOpen, setDialogConfirmOpen] = useState(false);
+    const [dialogColumnGroupOpen, setDialogColumnGroupOpen] = useState<boolean>(false);
 
     const openDialog = (columnId: number = 0) => {
         setDialogOpen(true);
@@ -146,6 +149,11 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (props: ColumnsPageProps) => {
     const removeItemDropdown = (id: number) => {
         const newDropdown = dialogDataDropdown.filter(item => item.id !== id);
         setDialogDataDropdown(newDropdown);
+    }
+
+    const dialogGroupsShow = (id: number) => {
+        setDialogColumnGroupOpen(true);
+        setDialogDataId(id);
     }
 
     const sortTable = (column: keyof Column, asc: boolean) => {
@@ -285,7 +293,7 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (props: ColumnsPageProps) => {
                                                     Edit
                                                 </button>
                                                 <button
-                                                    // onClick={() => dialogGroupsShow(table.id)}
+                                                    onClick={() => dialogGroupsShow(table.id)}
                                                 >
                                                     Groups
                                                 </button>
@@ -461,6 +469,12 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (props: ColumnsPageProps) => {
                 cancel={() => setDialogConfirmOpen(false)}
                 confirm={deleteColumn}
             />}
+            {dialogColumnGroupOpen
+                ? <DialogColumnGroupList
+                    cancel={() => setDialogColumnGroupOpen(false)}
+                    id={dialogDataId}
+                />
+                : <></>}
         </div>
     )
 }
