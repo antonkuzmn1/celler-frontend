@@ -17,7 +17,7 @@ const TablePage: React.FC = () => {
     const dispatch = useDispatch();
 
     const [name, setName] = useState<string>('');
-    const {authorized, admin, loading} = useSelector((state: RootState) => state.user);
+    const {authorized, admin} = useSelector((state: RootState) => state.user);
 
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [dialogDataId, setDialogDataId] = useState<number>(0);
@@ -53,16 +53,16 @@ const TablePage: React.FC = () => {
         }
     }
 
-    const handlerDialogFields = (cellId: number, cellType: ColumnType, e: React.FormEvent<HTMLInputElement>) => {
-        console.log('\n\ncellId:', cellId);
-        console.log('cellType:', cellType);
-        console.log(e.currentTarget.value, e.currentTarget.checked);
+    const handlerDialogFields = (cellId: number, cellType: ColumnType, e: any) => {
+        // console.log('\n\ncellId:', cellId);
+        // console.log('cellType:', cellType);
+        // console.log(e.currentTarget.value, e.currentTarget.checked);
 
-        const newDialogFields = [...dialogFields]; // Создаём новый массив
-        console.log('dialogFields:', newDialogFields);
+        const newDialogFields = [...dialogFields];
+        // console.log('dialogFields:', newDialogFields);
 
         const index = newDialogFields.findIndex((cell) => cell.id === cellId);
-        if (index !== -1) { // Проверяем, что нашли нужный элемент
+        if (index !== -1) {
             switch (cellType) {
                 case 'string':
                     newDialogFields[index] = {...newDialogFields[index], valueString: e.currentTarget.value};
@@ -77,12 +77,12 @@ const TablePage: React.FC = () => {
                     newDialogFields[index] = {...newDialogFields[index], valueDate: e.currentTarget.value};
                     break;
                 case 'list':
-                    // Обработка для типа 'list', если понадобится
+                    newDialogFields[index] = {...newDialogFields[index], valueDropdown: e.currentTarget.value};
                     break;
                 default:
                     break;
             }
-            setDialogFields(newDialogFields); // Обновляем стейт
+            setDialogFields(newDialogFields);
         }
     }
 
@@ -99,8 +99,7 @@ const TablePage: React.FC = () => {
                 dispatch(setUserLoading(true));
                 axios.put(baseUrl + '/table/cell', {
                     id, valueInt, valueString, valueDate, valueBoolean, valueDropdown
-                }).then((response) => {
-                    console.log(response)
+                }).then((_response) => {
                 }).finally(() => {
                     setDialogOpen(false);
                     getTable();
@@ -235,7 +234,11 @@ const TablePage: React.FC = () => {
                                                     content = date.getFullYear() > 1970 ? date.toDateString() : '';
                                                     break;
                                                 case 'list':
-                                                    content = cell.valueList;
+                                                    const ddKey = cell.valueDropdown;
+                                                    const dropdowns = cell.column.dropdown
+                                                    const dropdown = dropdowns.find((dropdown: {id: number, text: string}) => dropdown.id === ddKey);
+                                                    const ddText = dropdown.text;
+                                                    content = ddText;
                                                     break;
                                                 default:
                                                     content = '???';
@@ -257,7 +260,7 @@ const TablePage: React.FC = () => {
                 </div>
             </div>
             {dialogOpen && <Dialog
-                title={dialogDataId > 0 ? 'Edit Table' : 'New Table'}
+                title={dialogDataId > 0 ? 'Edit Row' : 'New Row'}
                 close={() => setDialogOpen(false)}
                 delete={dialogDataId > 0 ? () => setDialogConfirmDeleteOpen(true) : undefined}
                 confirm={confirmRow}
@@ -308,13 +311,35 @@ const TablePage: React.FC = () => {
                                 );
                                 break;
                             case "list":
+                                // const ddKey = cell.valueDropdown;
+                                // const dropdowns = cell.column.dropdown
+                                // const dropdown = dropdowns.find((dropdown: {id: number, text: string}) => dropdown.id === ddKey);
+                                // const ddText = dropdown.text;
+                                // console.log('ddKey:', ddKey);
+                                // console.log('ddText:', ddText);
                                 inputElement = (
-                                    <input
-                                        placeholder={'Enter value'}
-                                        type={'text'}
-                                        // value={field.column.type}
-                                        // onChange={(e) => handlerDialogFields(cell.id, cell.column.type, e)}
+                                    <select
+                                        value={cell.valueDropdown}
+                                        onChange={(e) => handlerDialogFields(cell.id, cell.column.type, e)}
+                                        children={
+                                            cell.column.dropdown.map((item: {
+                                                id: number,
+                                                text: string
+                                            }, index: number) => (
+                                                <option
+                                                    key={index}
+                                                    value={item.id}
+                                                    children={item.text}
+                                                />
+                                            ))
+                                        }
                                     />
+                                    // <input
+                                    //     placeholder={'Enter value'}
+                                    //     type={'text'}
+                                    //     // value={field.column.type}
+                                    //     // onChange={(e) => handlerDialogFields(cell.id, cell.column.type, e)}
+                                    // />
                                 );
                                 break;
                             default:
