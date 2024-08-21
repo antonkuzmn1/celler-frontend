@@ -1,7 +1,7 @@
 {
   "name": "celler-frontend",
   "private": true,
-  "version": "0.0.13-SNAPSHOT",
+  "version": "0.0.14-SNAPSHOT",
   "type": "module",
   "scripts": {
     "dev": "vite",

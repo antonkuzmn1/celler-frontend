@@ -5,6 +5,7 @@ interface DialogProps {
     title: string;
     close: () => void;
     delete?: () => void;
+    create?: () => void;
     confirm?: () => void;
     children: ReactNode;
     // fields: {
@@ -45,6 +46,9 @@ const Dialog: React.FC<DialogProps> = (props: DialogProps) => {
                     </button>
                     {props.delete && (
                         <button onClick={props.delete}>Delete</button>
+                    )}
+                    {props.create && (
+                        <button onClick={props.create}>Create</button>
                     )}
                     {props.confirm && (
                         <button onClick={props.confirm}>Confirm</button>

@@ -21,7 +21,7 @@ const router = createBrowserRouter([
     {path: "*", element: <Navigate to="/tables"/>},
     {path: "/account", element: <AccountPage/>},
     {path: "/tables", element: <TablesPage/>},
-    {path: "/tables/:id", element: <TablePage/>},
+    {path: "/tables/:tableId", element: <TablePage/>},
     {path: "/columns/:id", element: <ColumnsPage/>},
     {path: "/users", element: <UsersPage/>},
     {path: "/groups", element: <GroupsPage/>},

@@ -11,6 +11,7 @@ import DialogConfirm from "../components/DialogConfirm.tsx";
 import DialogColumnGroupList from "../components/DialogColumnGroupList.tsx";
 
 export type Dropdown = { id: number, text: string };
+export type ColumnType = '' | 'action' | 'string' | 'integer' | 'boolean' | 'date' | 'list';
 
 export interface Column {
     id: number
@@ -18,7 +19,8 @@ export interface Column {
     updated: string,
     name: string,
     title: string,
-    type: string,
+    width: string,
+    type: ColumnType,
     dropdown: Dropdown[],
     order: number
     columnGroups: any[],
@@ -43,6 +45,7 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (_props: ColumnsPageProps) => {
     const [dialogDataUpdated, setDialogDataUpdated] = useState<string>('');
     const [dialogDataName, setDialogDataName] = useState<string>('');
     const [dialogDataTitle, setDialogDataTitle] = useState<string>('');
+    const [dialogDataWidth, setDialogDataWidth] = useState<string>('');
     const [dialogDataOrder, setDialogDataOrder] = useState<number>(0);
     const [dialogDataType, setDialogDataType] = useState<string>('');
     const [dialogDataDropdown, setDialogDataDropdown] = useState<Dropdown[]>([]);
@@ -59,6 +62,7 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (_props: ColumnsPageProps) => {
             setDialogDataUpdated('');
             setDialogDataName('');
             setDialogDataTitle('');
+            setDialogDataWidth('');
             setDialogDataOrder(0);
             setDialogDataType('');
             setDialogDataDropdown([]);
@@ -72,6 +76,7 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (_props: ColumnsPageProps) => {
                 setDialogDataUpdated(response.data.updated);
                 setDialogDataName(response.data.name);
                 setDialogDataTitle(response.data.title);
+                setDialogDataWidth(response.data.width);
                 setDialogDataOrder(response.data.order);
                 setDialogDataType(response.data.type);
                 setDialogDataDropdown(response.data.dropdown ? response.data.dropdown : []);
@@ -99,6 +104,7 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (_props: ColumnsPageProps) => {
         const title = dialogDataTitle;
         const order = dialogDataOrder;
         const type = dialogDataType
+        const width = dialogDataWidth;
         const dropdown = dialogDataDropdown;
         const tableId = id;
 
@@ -109,6 +115,7 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (_props: ColumnsPageProps) => {
                 title,
                 order,
                 type,
+                width,
                 tableId,
                 dropdown,
             }).then(response => {
@@ -125,6 +132,7 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (_props: ColumnsPageProps) => {
                 title,
                 order,
                 type,
+                width,
                 dropdown,
                 tableId,
             }).then(response => {
@@ -256,6 +264,13 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (_props: ColumnsPageProps) => {
                                     </div>
                                     Type
                                 </th>
+                                <th className='small'>
+                                    <div className='buttons'>
+                                        <button onClick={() => sortTable('width', true)}>A</button>
+                                        <button onClick={() => sortTable('width', false)}>D</button>
+                                    </div>
+                                    Width
+                                </th>
                                 <th className='large'>
                                     <div className='buttons'>
                                         <button onClick={() => sortTable('name', true)}>A</button>
@@ -283,9 +298,7 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (_props: ColumnsPageProps) => {
                             {filteredTables.map((table, index) => {
                                 const created = new Date(table.created);
                                 return (
-                                    table.type === 'action'
-                                        ? <></>
-                                        : <tr key={index}>
+                                    table.type !== 'action' && <tr key={index}>
                                             <td className='action'>
                                                 <button
                                                     onClick={() => openDialog(table.id)}
@@ -301,6 +314,7 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (_props: ColumnsPageProps) => {
                                             <td className={'small'}>{table.id}</td>
                                             <td className={'small'}>{table.order}</td>
                                             <td className={'small'}>{table.type}</td>
+                                            <td className={'small'}>{table.width}</td>
                                             <td className={'large'}>{table.name}</td>
                                             <td className={'large'}>{table.title}</td>
                                             <td className={'medium'}>{created.toDateString()}</td>
@@ -373,6 +387,20 @@ const ColumnsPage: React.FC<ColumnsPageProps> = (_props: ColumnsPageProps) => {
                             type='number'
                             value={dialogDataOrder}
                             onChange={(e) => setDialogDataOrder(Number(e.target.value))}
+                        />
+                    </div>
+                </div>
+                <div className='field'>
+                    <div className='left'>
+                        <p>Width</p>
+                    </div>
+                    <div className='right'>
+                        <input
+                            placeholder='Required'
+                            type='number'
+                            step={10}
+                            value={dialogDataWidth}
+                            onChange={(e) => setDialogDataWidth(e.target.value)}
                         />
                     </div>
                 </div>

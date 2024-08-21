@@ -19,6 +19,8 @@ export interface Table {
     tableGroups: any[];
     tableGroupsCreate: any[];
     tableGroupsDelete: any[];
+    columns: any[];
+    rows: any[]
 }
 
 const TablesPage: React.FC = () => {
@@ -69,8 +71,7 @@ const TablesPage: React.FC = () => {
         dispatch(setUserLoading(true));
         axios.delete(baseUrl + '/table', {
             data: {id: dialogDataId}
-        }).then(response => {
-            console.log(response);
+        }).then(_response => {
             setDialogOpen(false);
             getTable();
         }).finally(() => {
@@ -194,146 +195,135 @@ const TablesPage: React.FC = () => {
             </div>
             <div className='frame'>
                 <div className='content'>
-                    {filteredTables.length > 0
-                        ? <table>
-                            <thead>
-                            <tr>
-                                <th className='action'>Settings</th>
-                                <th className='small'>
-                                    <div className='buttons'>
-                                        <button onClick={() => sortTable('id', true)}>A</button>
-                                        <button onClick={() => sortTable('id', false)}>D</button>
-                                    </div>
-                                    ID
-                                </th>
-                                <th className='large'>
-                                    <div className='buttons'>
-                                        <button onClick={() => sortTable('name', true)}>A</button>
-                                        <button onClick={() => sortTable('name', false)}>D</button>
-                                    </div>
-                                    Name
-                                </th>
-                                <th className='large'>
-                                    <div className='buttons'>
-                                        <button onClick={() => sortTable('title', true)}>A</button>
-                                        <button onClick={() => sortTable('title', false)}>D</button>
-                                    </div>
-                                    Title
-                                </th>
-                                <th className='medium'>
-                                    <div className='buttons'>
-                                        <button onClick={() => sortTable('created', true)}>A</button>
-                                        <button onClick={() => sortTable('created', false)}>D</button>
-                                    </div>
-                                    Created
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {filteredTables.map((table, index) => {
-                                const created = new Date(table.created);
-                                return (
-                                    <tr key={index}>
-                                        <td className='action'>
-                                            <button
-                                                onClick={() => openDialog(table.id)}
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => dialogGroupsShow(table.id)}
-                                            >
-                                                Groups
-                                            </button>
-                                            <button
-                                                onClick={() => navigate(`/columns/${table.id}`)}
-                                            >
-                                                Columns
-                                            </button>
-                                            <button>Open</button>
-                                        </td>
-                                        <td className='small'>{table.id}</td>
-                                        <td className='large'>{table.name}</td>
-                                        <td className='large'>{table.title}</td>
-                                        <td className='medium'>{created.toDateString()}</td>
-                                    </tr>
-                                )
-                            })}
-                            </tbody>
-                        </table>
-                        : <></>
-                    }
+                    {filteredTables.length > 0 && <table>
+                        <thead>
+                        <tr>
+                            <th className='action'>Settings</th>
+                            <th className='small'>
+                                <div className='buttons'>
+                                    <button onClick={() => sortTable('id', true)}>A</button>
+                                    <button onClick={() => sortTable('id', false)}>D</button>
+                                </div>
+                                ID
+                            </th>
+                            <th className='large'>
+                                <div className='buttons'>
+                                    <button onClick={() => sortTable('name', true)}>A</button>
+                                    <button onClick={() => sortTable('name', false)}>D</button>
+                                </div>
+                                Name
+                            </th>
+                            <th className='large'>
+                                <div className='buttons'>
+                                    <button onClick={() => sortTable('title', true)}>A</button>
+                                    <button onClick={() => sortTable('title', false)}>D</button>
+                                </div>
+                                Title
+                            </th>
+                            <th className='medium'>
+                                <div className='buttons'>
+                                    <button onClick={() => sortTable('created', true)}>A</button>
+                                    <button onClick={() => sortTable('created', false)}>D</button>
+                                </div>
+                                Created
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {filteredTables.map((table, index) => {
+                            const created = new Date(table.created);
+                            return (
+                                <tr key={index}>
+                                    <td className='action'>
+                                        <button
+                                            onClick={() => openDialog(table.id)}
+                                            children={'Edit'}
+                                        />
+                                        <button
+                                            onClick={() => dialogGroupsShow(table.id)}
+                                            children={'Groups'}
+                                        />
+                                        <button
+                                            onClick={() => navigate(`/columns/${table.id}`)}
+                                            children={'Columns'}
+                                        />
+                                        <button
+                                            onClick={() => navigate(`/tables/${table.id}`)}
+                                            children={'Open'}
+                                        />
+                                    </td>
+                                    <td className='small'>{table.id}</td>
+                                    <td className='large'>{table.name}</td>
+                                    <td className='large'>{table.title}</td>
+                                    <td className='medium'>{created.toDateString()}</td>
+                                </tr>
+                            )
+                        })}
+                        </tbody>
+                    </table>}
                 </div>
             </div>
-            {dialogOpen
-                ? <Dialog
-                    title={dialogDataId > 0 ? 'Edit Table' : 'New Table'}
-                    close={() => setDialogOpen(false)}
-                    delete={dialogDataId > 0 ? () => setDialogConfirmOpen(true) : undefined}
-                    confirm={confirmUser}
-                >{!loading
-                    ? (<>
-                        {dialogDataId > 0 ? <>
-                            <div className='field'>
-                                <div className='left'>
-                                    <p>Created</p>
-                                </div>
-                                <div className='right'>
-                                    <p>{(new Date(dialogDataCreated)).toDateString()}</p>
-                                </div>
-                            </div>
-                            <div className='field'>
-                                <div className='left'>
-                                    <p>Updated</p>
-                                </div>
-                                <div className='right'>
-                                    <p>{(new Date(dialogDataUpdated)).toDateString()}</p>
-                                </div>
-                            </div>
-                        </> : <></>}
-                        <div className='field'>
-                            <div className='left'>
-                                <p>Full Name</p>
-                            </div>
-                            <div className='right'>
-                                <input
-                                    placeholder='Required'
-                                    type='text'
-                                    value={dialogDataName}
-                                    onChange={(e) => setDialogDataName(e.target.value)}
-                                />
-                            </div>
+            {dialogOpen && <Dialog
+                title={dialogDataId > 0 ? 'Edit Table' : 'New Table'}
+                close={() => setDialogOpen(false)}
+                delete={dialogDataId > 0 ? () => setDialogConfirmOpen(true) : undefined}
+                confirm={confirmUser}
+            >{!loading && (<>
+                {dialogDataId > 0 && <>
+                    <div className='field'>
+                        <div className='left'>
+                            <p>Created</p>
                         </div>
-                        <div className='field'>
-                            <div className='left'>
-                                <p>Title</p>
-                            </div>
-                            <div className='right'>
-                                <input
-                                    placeholder='Required'
-                                    type='text'
-                                    value={dialogDataTitle}
-                                    onChange={(e) => setDialogDataTitle(e.target.value)}
-                                />
-                            </div>
+                        <div className='right'>
+                            <p>{(new Date(dialogDataCreated)).toDateString()}</p>
                         </div>
-                    </>)
-                    : <></>}
-                </Dialog>
-                : <></>}
-            {dialogConfirmOpen
-                ? <DialogConfirm
-                    text={'Are you sure?'}
-                    cancel={() => setDialogConfirmOpen(false)}
-                    confirm={deleteUser}
-                />
-                : <></>}
-            {dialogTableGroupOpen
-                ? <DialogTableGroupList
-                    cancel={() => setDialogTableGroupOpen(false)}
-                    id={dialogDataId}
-                />
-                : <></>}
+                    </div>
+                    <div className='field'>
+                        <div className='left'>
+                            <p>Updated</p>
+                        </div>
+                        <div className='right'>
+                            <p>{(new Date(dialogDataUpdated)).toDateString()}</p>
+                        </div>
+                    </div>
+                </>}
+                <div className='field'>
+                    <div className='left'>
+                        <p>Full Name</p>
+                    </div>
+                    <div className='right'>
+                        <input
+                            placeholder='Required'
+                            type='text'
+                            value={dialogDataName}
+                            onChange={(e) => setDialogDataName(e.target.value)}
+                        />
+                    </div>
+                </div>
+                <div className='field'>
+                    <div className='left'>
+                        <p>Title</p>
+                    </div>
+                    <div className='right'>
+                        <input
+                            placeholder='Required'
+                            type='text'
+                            value={dialogDataTitle}
+                            onChange={(e) => setDialogDataTitle(e.target.value)}
+                        />
+                    </div>
+                </div>
+            </>)}
+            </Dialog>}
+            {dialogConfirmOpen && <DialogConfirm
+                text={'Are you sure?'}
+                cancel={() => setDialogConfirmOpen(false)}
+                confirm={deleteUser}
+            />}
+            {dialogTableGroupOpen && <DialogTableGroupList
+                cancel={() => setDialogTableGroupOpen(false)}
+                id={dialogDataId}
+            />}
         </div>
     )
 }
